@@ -1,5 +1,6 @@
 """Count words, lines, and characters in a text file."""
-import sys
+import argparse
+import json
 
 
 def count(text):
@@ -8,11 +9,17 @@ def count(text):
     return {"words": len(words), "lines": len(lines), "chars": len(text)}
 
 
-def main():
-    path = sys.argv[1]
-    with open(path) as f:
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("path", help="text file to count")
+    parser.add_argument("--json", action="store_true", help="print the counts as JSON")
+    args = parser.parse_args(argv)
+    with open(args.path) as f:
         result = count(f.read())
-    print(f"{result['lines']} lines, {result['words']} words, {result['chars']} characters")
+    if args.json:
+        print(json.dumps(result))
+    else:
+        print(f"{result['lines']} lines, {result['words']} words, {result['chars']} characters")
 
 
 if __name__ == "__main__":
